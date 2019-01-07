@@ -18,7 +18,7 @@ def estc_xml2csv(filename):
     writefile = open(filename.replace(".xml",".csv"), "w")
     
     with open(filename, "r") as f:
-        writefile.write("Record_seq\tField_seq\tSubfield_seq\tField_code\tSubfield_code\tValue\n")
+        writefile.write("Record_seq\tField_seq\tSubfield_seq\tField_code\tSubfield_code\tValue\tind1\tind2\n")
         for l in f:
             if l.startswith("<marc:record>"):
                 counter = counter + 1
@@ -66,14 +66,18 @@ def estc_xml2csv(filename):
                                     "1" + "\t" + \
                                     "leader" + "\t" +\
                                     key + "\t" + \
-                                    value + \
+                                    value + "\t" + \
+                                    "" + "\t" + \
+                                    "" + \
                                     "\n")
                 writefile.write(str(counter) + "\t" + \
                                 "1" + "\t" + \
                                 "1" + "\t" + \
                                 "leader_raw" + "\t" + \
                                 "" + "\t" + \
-                                fieldvalue + \
+                                fieldvalue + "\t" + \
+                                "" + "\t" + \
+                                "" + \
                                 "\n")
                 
             elif l.startswith("<marc:controlfield"):
@@ -171,14 +175,18 @@ def estc_xml2csv(filename):
                                                     "1" + "\t" + \
                                                     "008" + "\t" + \
                                                     key + "\t" + \
-                                                    value + \
+                                                    value + "\t" + \
+                                                    "" + "\t" + \
+                                                    "" + \
                                                     "\n")
                             writefile.write(str(counter) + "\t" + \
                                             "1" + "\t" + \
                                             "1" + "\t" + \
                                             "008_raw" + "\t" + \
                                             "" + "\t" + \
-                                            fieldvalue + \
+                                            fieldvalue + "\t" + \
+                                            "" + "\t" + \
+                                            "" + \
                                             "\n")
                             
                     elif "<marc:datafield" in field:
@@ -192,38 +200,12 @@ def estc_xml2csv(filename):
                             field_seq = 1
                         tmpCodes[tag] = field_seq
                         
-                        if ind1 != "" and ind1 != " " and ind1 != "#":
-                            fieldcode = tag + "_ind1"
-                            if fieldcode in tmpCodes.keys():
-                                prevvalue = tmpCodes.pop(fieldcode)
-                                seq = prevvalue + 1
-                            else:
-                                seq = 1
-                            tmpCodes[fieldcode] = seq
-                            writefile.write(str(counter) + "\t" + \
-                                            str(field_seq) + "\t" + \
-                                            "1" + "\t" + \
-                                            tag + "\t" + \
-                                            "ind1" + "\t" + \
-                                            ind1 + \
-                                            "\n")
+                        if (ind1 == " ") or (ind1 == "#"):
+                            ind1 = ""
                             
                         ind2 = re.search("ind2=\"([^\"]*)\"", field).groups()[0]
-                        if ind2 != "" and ind2 != " " and ind2 != "#":
-                            fieldcode = tag + "_ind2"
-                            if fieldcode in tmpCodes.keys():
-                                prevvalue = tmpCodes.pop(fieldcode)
-                                seq = prevvalue + 1
-                            else:
-                                seq = 1
-                            tmpCodes[fieldcode] = seq
-                            writefile.write(str(counter) + "\t" + \
-                                            str(field_seq) + "\t" + \
-                                            "1" + "\t" + \
-                                            tag + "\t" + \
-                                            "ind2" + "\t" + \
-                                            ind2 + \
-                                            "\n")
+                        if (ind2 == " ") or (ind2 == "#"):
+                            ind2 = ""
                             
                     elif field.startswith("<marc:subfield"):
                         code = ""
@@ -241,6 +223,8 @@ def estc_xml2csv(filename):
                                         str(seq) + "\t" + \
                                         tag + "\t" + \
                                         code + "\t" + \
-                                        fieldvalue + \
+                                        fieldvalue + "\t" + \
+                                        ind1 + "\t" + \
+                                        ind2 + \
                                         "\n")
     writefile.close()
