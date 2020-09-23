@@ -6,7 +6,7 @@ import re
 import itertools
 import codecs
 
-input_estc = "estc.xml"
+input_xml = "estc.xml"
 
 def estc_xml2csv(filename):
 
@@ -54,7 +54,7 @@ def estc_xml2csv(filename):
                     fieldtype008 = "mixed"
                 else:
                     fieldtype008 = ""
-                    print "Unknown field type:", fieldvalue[6:8]
+                    print("Unknown field type:", fieldvalue[6:8])
                     print(fieldvalue)
                     tuntematon_kalalaji=True
                 
@@ -227,3 +227,7 @@ def estc_xml2csv(filename):
                                         ind2 + \
                                         "\n")
     writefile.close()
+
+
+estc_xml2csv(input_xml)
+
