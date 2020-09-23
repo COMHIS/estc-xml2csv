@@ -6,7 +6,6 @@ import re
 import itertools
 import codecs
 
-
 input_estc = "estc.xml"
 
 def estc_xml2csv(filename):
